@@ -242,10 +242,10 @@ jobs:
       - checkout
       - run: 
           name: Install tar
-          command: yum install -y tar
+          command: sudo apt install tar
       - run: 
           name: Install gzip
-          command: yum install -y gzip
+          command: sudo apt install gzip
       - run:
           name: Install aws-cli
           command: |
