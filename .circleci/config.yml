@@ -240,9 +240,9 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      # - run:
-      #     name: Install dependencies
-      #     command: 
+      - run:
+          name: Install dependencies
+          command: yum install -y tar npm
       - run:
           name: Get backend url
           command: |
