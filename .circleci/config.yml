@@ -273,7 +273,8 @@ jobs:
       # Here's where you will add some code to rollback on failure      
                     
   deploy-backend:
-    - image: python:3.11-rc-alpine
+    docker:
+      - image: python:3.11-rc-alpine
     steps:
       # Checkout code from git
       # Add ssh keys with fingerprint
