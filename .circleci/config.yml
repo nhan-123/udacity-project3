@@ -190,7 +190,7 @@ jobs:
 
   configure-infrastructure:
     docker:
-      - image: python:3.11-rc-alpine
+      - image: python:3.6.8
     steps:
       # Checkout code from git
       # Add ssh keys with fingerprint
@@ -199,11 +199,10 @@ jobs:
       - add_ssh_keys:
           fingerprinters:
             - "1b:c1:b3:64:22:bc:2b:0f:9f:8f:c0:46:65:e8:43:03"
-      # - run:
-      #     name: Install dependencies
-      #     command: |
-      #       # Your code here
-      #       exit 1
+      - run:
+          name: Install dependencies
+          command: |
+            pip install ansible -y
       - run:
           name: Configure server
           command: |
