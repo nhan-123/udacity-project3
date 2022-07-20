@@ -309,20 +309,10 @@ jobs:
       - image: python:3.11-rc-alpine
     steps:
       - checkout
-      - run: 
-          name: Install tar
-          command: sudo apt install tar
-      - run: 
-          name: Install gzip
-          command: sudo apt install gzip
-      - run:
-          name: Install aws-cli
+     - run:
+          name: Install dependencies
           command: |
-            sudo apt install curl
-            sudo apt install unzip
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
-            sudo ./aws/install
+            apk add --update ansible tar npm curl
       - run:
           name: Get backend url
           command: |
@@ -413,8 +403,8 @@ workflows:
           requires: [run-migrations]
       - deploy-backend:
           requires: [run-migrations]
-      # - smoke-test:
-      #     requires: [deploy-backend, deploy-frontend]
+      - smoke-test:
+          requires: [deploy-backend, deploy-frontend]
       # - cloudfront-update:
       #     requires: [smoke-test]
       # - cleanup:
