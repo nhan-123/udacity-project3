@@ -221,6 +221,14 @@ jobs:
       - restore_cache:
           keys: [backend-build]
       - run:
+          name: Create file .env for migration and deployment backend
+          command: |
+            echo -e "VERSION=1\nTYPEORM_CONNECTION=${TYPEORM_CONNECTION}\nTYPEORM_MIGRATIONS_DIR=${TYPEORM_MIGRATIONS_DIR}\nTYPEORM_ENTITIES=${TYPEORM_ENTITIES}\nTYPEORM_MIGRATIONS=${TYPEORM_MIGRATIONS}\nTYPEORM_HOST=${TYPEORM_HOST}\nTYPEORM_PORT=${TYPEORM_PORT}\nTYPEORM_USERNAME=${TYPEORM_USERNAME}\nTYPEORM_PASSWORD=${TYPEORM_PASSWORD}\nTYPEORM_DATABASE=${TYPEORM_DATABASE}" >> backend/.env
+      - persist_to_workspace:
+          root: .
+          paths:
+            - backend/.env
+      - run:
           name: Run migrations
           command: |
             cd backend
@@ -292,6 +300,7 @@ jobs:
       - run:
           name: Deploy backend
           command: |
+            echo "NODE_ENV=production" >> backend/.env
             cd backend
             npm i
             npm run build
@@ -340,20 +349,20 @@ jobs:
             fi
       # Here's where you will add some code to rollback on failure  
 
-#   cloudfront-update:
-#     docker:
-#       # Docker image here that supports AWS CLI
-#     steps:
-#       # Checkout code from git
-#       - run:
-#           name: Install dependencies
-#           command: |
-#             # your code here
-#       - run:
-#           name: Update cloudfront distribution
-#           command: |
-#             # your code here
-#       # Here's where you will add some code to rollback on failure  
+  cloudfront-update:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Update cloudfront distribution
+          command: |
+            aws cloudformation deploy \
+            --template-file .circleci/files/cloudfront.yml \
+            --stack-name InitialStack \
+            --parameter-overrides WorkflowID="udapeople-${CIRCLE_WORKFLOW_ID:0:7}" \
+            --tags project=udapeople
+      # Here's where you will add some code to rollback on failure  
 
 # cleanup:
 #     docker:
